@@ -2,8 +2,11 @@
 # Copyright 2016-2017 Camptocamp (http://www.camptocamp.com/)
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
+import logging
+
 from odoo import api, models
 
+_logger = logging.getLogger(__name__)
 
 class Base(models.AbstractModel):
     _inherit = 'base'
@@ -18,6 +21,9 @@ class Base(models.AbstractModel):
                 if value and column.type == 'many2one':
                     value = value[0]  # many2one are tuple (id, name)
                 new_values[fieldname] = value
+            else:
+                _logger.warning('⚠️ %s not added to new_values', fieldname)
+                _logger.info('current value is %s, ignored new value was %s', record[fieldname], vals[fieldname])
         return new_values
 
     @api.model
