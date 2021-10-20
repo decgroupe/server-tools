@@ -31,6 +31,21 @@ class AuditlogtHTTPSession(models.Model):
         return [(session.id, session.display_name) for session in self]
 
     @api.model
+    def _ignore_session(self, request):
+        """ Do not audit http session in rpc mode, otherwise the database
+            will be filled with useless data
+        """
+        if request:
+            # Use same logic from odoo/odoo/http.py
+            save_session = (not request.endpoint) or request.endpoint.routing.get('save_session', True)
+            if not save_session:
+                return True
+            if request.httprequest.path.startswith('/xmlrpc/') \
+            or request.httprequest.path.startswith('/jsonrpc/'):
+                return True
+        return False
+
+    @api.model
     def current_http_session(self):
         """Create a log corresponding to the current HTTP user session, and
         returns its ID. This method can be called several times during the
@@ -39,6 +54,8 @@ class AuditlogtHTTPSession(models.Model):
         If no HTTP user session is available, returns `False`.
         """
         if not request:
+            return False
+        if self._ignore_session(request):
             return False
         httpsession = request.session
         if httpsession:
