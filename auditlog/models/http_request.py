@@ -2,6 +2,7 @@
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
 from psycopg2.extensions import AsIs
+from xmlrpc.client import loads
 
 from odoo import api, fields, models
 from odoo.http import request
@@ -56,12 +57,30 @@ class AuditlogHTTPRequest(models.Model):
                 )
                 if self.env.cr.fetchone():
                     return httprequest.auditlog_http_request_id
+            name = httprequest.path
+            if name.startswith('/xmlrpc/'):
+                data = httprequest.get_data()
+                params, method = loads(data)
+                (db, user_id, passwd ) = params[0], int(params[1]), params[2]
+                user_context = False
+                params = params[3:]
+                if method in ['execute', 'execute_kw']:
+                    model, model_method, model_method_args = params[0], params[1], params[2]
+                    name = "%s > %s.%s()" % (name, model, model_method)
+                    if method == 'execute_kw':
+                        model_method_kwargs = params[3]
+                        user_context = model_method_kwargs.get('context', False)
+                    else:
+                        model_method_kwargs = {}
+            else:
+                user_id = request.uid
+                user_context = request.context
             vals = {
-                "name": httprequest.path,
+                "name": name,
                 "root_url": httprequest.url_root,
                 "user_id": request.uid,
                 "http_session_id": http_session_model.current_http_session(),
-                "user_context": request.context,
+                "user_context": user_context,
             }
             httprequest.auditlog_http_request_id = self.create(vals).id
             return httprequest.auditlog_http_request_id
