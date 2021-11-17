@@ -6,7 +6,7 @@ from odoo import models, fields
 class AuditlogLog(models.Model):
     _name = 'auditlog.log'
     _description = "Auditlog - Log"
-    _order = "create_date desc"
+    _order = "create_date desc, id desc"
 
     name = fields.Char("Resource Name", size=64)
     model_id = fields.Many2one(
