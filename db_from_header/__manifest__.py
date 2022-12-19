@@ -5,12 +5,13 @@
     "summary": "Pre-select a database with an HTTP header",
     "version": "12.0.1.0.0",
     "website": "https://github.com/OCA/server-tools",
-    "author": "DEC, "
-              "Odoo Community Association (OCA)",
+    "author": "DEC, " "Odoo Community Association (OCA)",
     "license": "AGPL-3",
     "complexity": "normal",
     "category": "Tools",
-    "depends": ['web', ],
+    "depends": [
+        "web",
+    ],
     "auto_install": False,
-    'installable': True,
+    "installable": True,
 }
