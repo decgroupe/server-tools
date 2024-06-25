@@ -6,7 +6,7 @@
     "version": "14.0.1.1.2",
     "author": "Therp BV,Odoo Community Association (OCA)",
     "website": "https://github.com/OCA/server-tools",
-    "depends": ["base"],
+    "depends": ["base", "mail"],
     "license": "AGPL-3",
     "category": "Tools",
     "data": [
@@ -16,6 +16,7 @@
         "views/purge_models.xml",
         "views/purge_columns.xml",
         "views/purge_tables.xml",
+        "views/purge_dataduplicate.xml",
         "views/purge_data.xml",
         "views/create_indexes.xml",
         "views/purge_properties.xml",

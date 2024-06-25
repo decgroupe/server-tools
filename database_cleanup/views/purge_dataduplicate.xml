@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="purge_dataduplicate_view" model="ir.ui.view">
+        <field name="model">cleanup.purge.wizard.dataduplicate</field>
+        <field name="inherit_id" ref="form_purge_wizard" />
+        <field name="mode">primary</field>
+        <field name="arch" type="xml">
+            <field name="name" position="after">
+                <field name="model" />
+                <field name="res_id" />
+                <field name="count" />
+                <field name="data_ids" />
+            </field>
+        </field>
+    </record>
+
+    <record id="action_purge_dataduplicate" model="ir.actions.server">
+        <field name="name">Purge duplicates data entries that refer to missing resources</field>
+        <field name="type">ir.actions.server</field>
+        <field name="state">code</field>
+        <field name="model_id" ref="database_cleanup.model_cleanup_purge_wizard_dataduplicate" />
+        <field name="code">
+            action = env.get('cleanup.purge.wizard.dataduplicate').get_wizard_action()
+        </field>
+    </record>
+
+    <record id="purge_dataduplicate_line_tree" model="ir.ui.view">
+        <field name="model">cleanup.purge.line.dataduplicate</field>
+        <field name="inherit_id" ref="tree_purge_line" />
+        <field name="mode">primary</field>
+        <field name="arch" type="xml">
+            <field name="name" position="after">
+                <field name="model" />
+                <field name="res_id" />
+                <field name="count" />
+            </field>
+        </field>
+    </record>
+
+    <record id="action_purge_data_duplicate_line" model="ir.actions.server">
+        <field name="name">Purge</field>
+        <field name="type">ir.actions.server</field>
+        <field name="state">code</field>
+        <field name="model_id" ref="database_cleanup.model_cleanup_purge_line_dataduplicate" />
+        <field name="code">records.purge()</field>
+        <field
+            name="binding_model_id"
+            ref="database_cleanup.model_cleanup_purge_line_dataduplicate"
+        />
+    </record>
+</odoo>
